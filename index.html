@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RuinLab · Trading Risk Simulator</title>
+<meta name="description" content="Monte Carlo simulator for traders: see your risk of ruin, drawdowns and losing streaks before the market shows you.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0f17'/><polyline points='4,22 10,16 15,19 21,9 28,13' fill='none' stroke='%2322d3a6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><polyline points="4,22 10,16 15,19 21,9 28,13"/></svg>
+    <div>
+      <h1>RuinLab</h1>
+      <p>Simulate thousands of futures for your trading system before the market does it for real.</p>
+    </div>
+  </div>
+  <a class="gh" href="https://github.com/aziz4rehman-hue/ruinlab" target="_blank" rel="noopener">GitHub ↗</a>
+</header>
+
+<main class="grid">
+  <section class="panel inputs">
+    <h2>Your system</h2>
+    <div class="presets">
+      <button data-preset="scalper">Scalper</button>
+      <button data-preset="swing">Swing</button>
+      <button data-preset="gambler">Gambler</button>
+      <button data-preset="trend">Trend</button>
+    </div>
+
+    <label>Starting balance ($)
+      <input id="balance" type="number" min="100" step="100" value="10000">
+    </label>
+    <label>Win rate <output id="winrateOut"></output>
+      <input id="winrate" type="range" min="5" max="95" step="1" value="45">
+    </label>
+    <label>Reward : risk (avg win ÷ avg loss) <output id="rrOut"></output>
+      <input id="rr" type="range" min="0.2" max="6" step="0.1" value="2">
+    </label>
+    <label>Risk per trade <output id="riskOut"></output>
+      <input id="risk" type="range" min="0.25" max="25" step="0.25" value="2">
+    </label>
+    <div class="row">
+      <label>Trades
+        <input id="trades" type="number" min="20" max="1000" step="10" value="200">
+      </label>
+      <label>Simulations
+        <select id="sims">
+          <option>500</option><option selected>2000</option><option>5000</option>
+        </select>
+      </label>
+    </div>
+    <label>Count it as "ruin" when the account is down <output id="ruinOut"></output>
+      <input id="ruin" type="range" min="10" max="90" step="5" value="50">
+    </label>
+    <label class="check"><input id="compound" type="checkbox" checked> Risk a % of <em>current</em> balance (compounding)</label>
+
+    <button id="run" class="run">Run simulation</button>
+    <button id="share" class="ghost">Copy share link</button>
+  </section>
+
+  <section class="panel results">
+    <div class="verdict" id="verdict"></div>
+    <div class="stats" id="stats"></div>
+
+    <div class="chart-head">
+      <h2>Equity paths</h2>
+      <div class="legend">
+        <span><i class="sw band90"></i>5–95%</span>
+        <span><i class="sw band50"></i>25–75%</span>
+        <span><i class="sw med"></i>median</span>
+        <span><i class="sw ruinl"></i>ruin line</span>
+      </div>
+    </div>
+    <canvas id="fan" height="320"></canvas>
+
+    <div class="two">
+      <div>
+        <h2>Worst drawdown per run</h2>
+        <canvas id="ddHist" height="200"></canvas>
+      </div>
+      <div>
+        <h2>Losing-streak reality check</h2>
+        <p class="hint">Chance of seeing at least this many losses <b>in a row</b> somewhere in <span id="streakN"></span> trades:</p>
+        <table id="streaks"></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Educational tool. Not financial advice. Results assume every trade is independent with a fixed win rate and payoff, which real markets do not promise.
+  Everything runs in your browser. Nothing is sent anywhere.
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
